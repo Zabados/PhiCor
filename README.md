@@ -14,9 +14,9 @@ Use the `devtools` package to **install**.
 
 library(devtools)
 
-# Install TrendSummaries
+# Install PhiCor
 install_github('Zabados/PhiCor')
 
-# Load TrendSummaries
+# Load PhiCor
 library(PhiCor)
 ```
