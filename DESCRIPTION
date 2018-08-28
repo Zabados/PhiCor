@@ -1,0 +1,14 @@
+Package: PhiCor
+Type: Package
+Title: Calculated Phi Correlation of Association - weighted and unweighted, 
+    group-equalised and not.
+Version: 0.1.0
+Authors@R: person("Chetcuti", "Jordan", email = "jorche@ceh.ac.uk", role = c("aut", "cre"))
+Description: A package for calculating the Phi Correlation of Association to determine 
+    habitat preference of species.
+References:
+    Future publication...
+License: CC BY
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
