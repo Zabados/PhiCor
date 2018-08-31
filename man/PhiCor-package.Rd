@@ -42,6 +42,13 @@ De Cáceres, M., & Legendre, P. (2009). Associations between species and groups 
 
 Future publication...
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://doi.org/10.5281/zenodo.1407053}
+}
+
+}
 \author{
 Jordan Chetcuti
 }
