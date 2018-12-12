@@ -597,6 +597,94 @@ CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numb
 }
 
 
+
+
+Indicator.nonEqual <- function(CorIndexTargetVarInput){
+  N = CorIndexTargetVarInput$N
+  np = CorIndexTargetVarInput$np
+  n = CorIndexTargetVarInput$n
+  Np = CorIndexTargetVarInput$Np
+  ########
+  Rnon = sqrt((np/n)*(np/Np))
+  return(Rnon)
+}
+
+
+Indicator.groupEqual <- function(CorIndexTargetVarInput){
+  N = CorIndexTargetVarInput$N
+  ngp = CorIndexTargetVarInput$ngp
+  ng = CorIndexTargetVarInput$ng
+  Ngp = CorIndexTargetVarInput$Ngp
+  
+  
+  SumNks = sum(CorIndexTargetVarInput$nk/CorIndexTargetVarInput$Nk)
+  
+  ################
+  Requ = sqrt(((ngp/Ngp)/SumNks)*(ngp/Ngp))
+  return(Requ)
+}
+
+
+
+
+
+
+Indicator.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targetGroup, x = 1000, SquareID = NULL){
+  GroupEqualPermList = c()
+  NonGroupEqualPermList = c()
+  for(i in 1:x){
+    Perm1 = CorIndex.APerm(InDataframe, FieldToPerm, SquareID)
+    
+    
+    UnchangePerm = CorIndex(Perm1, FieldToPerm, weighted, groupsField)
+    VarPerm1 = CorIndex.TargetVar(UnchangePerm, targetGroup)
+    
+    #########
+    GroupEqualPermList = c(GroupEqualPermList, Indicator.groupEqual(VarPerm1))
+    NonGroupEqualPermList = c(NonGroupEqualPermList, Indicator.nonEqual(VarPerm1))
+  }
+  out = list("GroupEqualPermList" = GroupEqualPermList, "NonGroupEqualPermList" = NonGroupEqualPermList, "Permutations" = x)
+  return(out)
+}
+
+
+
+Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL){
+  CorIndexVarInput = CorIndex(InDataframe, speciesbinary, weighted, group, SquareID)
+  OutDF = CorIndexVarInput$GroupDF
+  OutDF$I = 0.0000000000
+  OutDF$pI = 0.0000000000
+  OutDF$Ig = 0.0000000000
+  OutDF$pIG = 0.0000000000
+  
+  
+  for(i in 1:nrow(OutDF)) {
+    targetVariables = CorIndex.TargetVar(CorIndexVarInput,OutDF[i,1])
+    
+    
+    print(OutDF[i,1])
+    
+    Distributions = Indicator.xPerm(InDataframe, speciesbinary,weighted,group,i, numberIteration, SquareID)
+    
+    
+    OutDF[i,2]= Indicator.nonEqual(targetVariables)
+    
+    
+    
+    #Calc each of the probabilities.
+    length(Distributions$NonGroupEqualPermList[Distributions$NonGroupEqualPermList >= OutDF[i,2]])/numberIteration
+    length(Distributions$NonGroupEqualPermList[Distributions$NonGroupEqualPermList <= OutDF[i,2]])/numberIteration
+    OutDF[i,3] = min(length(Distributions$NonGroupEqualPermList[Distributions$NonGroupEqualPermList >= OutDF[i,2]])/numberIteration , length(Distributions$NonGroupEqualPermList[Distributions$NonGroupEqualPermList <= OutDF[i,2]])/numberIteration)
+    OutDF[i,4]= Indicator.groupEqual(targetVariables)
+    OutDF[i,5] = min(length(Distributions$GroupEqualPermList[Distributions$GroupEqualPermList >= OutDF[i,4]])/numberIteration , length(Distributions$GroupEqualPermList[Distributions$GroupEqualPermList <= OutDF[i,4]])/numberIteration)
+    
+    OutputClass$result = OutDF
+    OutputClass$InVariables = CorIndexVarInput
+  }
+  return(OutputClass)
+}
+
+
 #' Looks for a filename in the current folder and then expands up and along the file tree
 #' looking for the filename.
 #'
