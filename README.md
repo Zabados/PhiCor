@@ -2,6 +2,7 @@
 
 ----------------
 A package for calculating the phi Coefficient of Association as a means of determining habitat association/preference.
+You can also use the package to calculate indicator values (IndVal).
 
 ### Cite
 ----------------
