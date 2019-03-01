@@ -25,7 +25,18 @@
 #'         \item \link[PhiCor]{CorIndex.all} returns the non and group-equalised phi values for all habitats
 #'             without p-values and is therefore quicker.
 #'     }
-#'
+#'     Weighted habitat indicator values (IndVal) can also be calculated, but these have not been tested in
+#'     the way that the phi coefficent has been. 
+#'     The main function for calculating IndVal is \link[PhiCor]{Indicator.all.plusP}
+#'     These functions are useful in testing or calculating only part
+#'     of the full outputs from \link[PhiCor]{Indicator.all.plusP}:
+#'     \itemize{
+#'         \item \link[PhiCor]{Indicator.nonEqual} Calculated the non group-equalised habitat indicator value (IndVal).
+#'         \item \link[PhiCor]{Indicator.groupEqual} Calculated the group-equalised species indicator value (IndVal).
+#'         \item \link[PhiCor]{Indicator.xPerm} Permutates and calculates for each permutation both the non and 
+#'              group-equalised species indicator value (IndVal).
+#'         \item 
+#'     } 
 #'
 #'     The functions \link[PhiCor]{lookup} and \link[PhiCor]{FilePathInTree}
 #'     might be used elsewhere.
@@ -470,6 +481,67 @@ CorIndex.APerm <- function(InDataframe, FieldToPerm, SquareID = NULL){
   return(copyDF)
 }
 
+
+CorIndex.toroidalAPerm <- function(InDataframe, FieldToPerm, SquareID = NULL){
+  copyDF = InDataframe
+  
+  
+  if(is.null(SquareID)){
+    rows = nrow(copyDF)
+    MoveOn = sample(0:rows, 1)
+    
+    copyDF$Index = row.names(copyDF)
+    copyDF$Index = as.numeric(copyDF$Index) + MoveOn
+    
+    copyDF$Index = ifelse(copyDF$Index>rows,copyDF$Index - rows, copyDF$Index )
+    
+    temp = copyDF[,c(FieldToPerm, "Index")]
+    
+    temp = temp[order(temp$Index),]
+    
+    copyDF[,FieldToPerm] =  temp[,FieldToPerm]
+    copyDF$Index = NULL
+    
+    #copyDF[,FieldToPerm] = sample(copyDF[,FieldToPerm], nrow(copyDF), replace = FALSE, prob = NULL)
+  }else{
+
+    AggCopyDF = aggregate(InDataframe[,FieldToPerm] ~ InDataframe[,SquareID], InDataframe, min)
+    AggCopyDF = setNames(AggCopyDF, c(SquareID, FieldToPerm))
+    
+    
+    
+    
+    rows = nrow(AggCopyDF)
+    MoveOn = sample(0:rows, 1)
+    
+    AggCopyDF$Index = row.names(AggCopyDF)
+    AggCopyDF$Index = as.numeric(AggCopyDF$Index) + MoveOn
+    
+    AggCopyDF$Index = ifelse(AggCopyDF$Index>rows,AggCopyDF$Index - rows, AggCopyDF$Index )
+    
+    temp = AggCopyDF[,c(FieldToPerm, "Index")]
+    
+    temp = temp[order(temp$Index),]
+    
+    AggCopyDF[,FieldToPerm] =  temp[,FieldToPerm]
+    AggCopyDF$Index = NULL
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    AggCopyDF[,FieldToPerm] = sample(AggCopyDF[,FieldToPerm], nrow(AggCopyDF), replace = FALSE, prob = NULL)
+    copyDF[,FieldToPerm] = as.numeric(lookup(copyDF[,SquareID], AggCopyDF[,SquareID], AggCopyDF[,2]))
+  }
+  return(copyDF)
+}
+
+
 #' Permutates and calculates for each permutation both the non and group-equalised
 #' Phi coefficent.
 #'
@@ -492,6 +564,8 @@ CorIndex.APerm <- function(InDataframe, FieldToPerm, SquareID = NULL){
 #' @param SquareID string - optional if non-weighted, but MUST be used if a weighting
 #'     is used. ID of each location. Useful later for permutating the locations to
 #'     calculate p-values.
+#' @param toroidal Boolean - If you suspect that your data is spatially auto-correlated you should use 
+#'     a toroidal permutation.
 #' @return Two data frames, one for the group-equalised $`GroupEqualPermList` and one
 #'     for the non group-equalised $NonGroupEqualPermList. It also returns the number of
 #'     permutations $Permutations.
@@ -516,11 +590,18 @@ CorIndex.APerm <- function(InDataframe, FieldToPerm, SquareID = NULL){
 #' @seealso \link[PhiCor]{PhiCor}
 #' @author Jordan Chetcuti
 #' @export
-CorIndex.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targetGroup, x = 1000, SquareID = NULL){
+CorIndex.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targetGroup, x = 1000, SquareID = NULL, toroidal = FALSE){
   GroupEqualPermList = c()
   NonGroupEqualPermList = c()
   for(i in 1:x){
-    Perm1 = CorIndex.APerm(InDataframe, FieldToPerm, SquareID)
+    
+    if (toroidal){
+      Perm1 = CorIndex.toroidalAPerm(InDataframe, FieldToPerm, SquareID)
+    }else{
+      Perm1 = CorIndex.APerm(InDataframe, FieldToPerm, SquareID)
+    }
+    
+    
     UnchangePerm = CorIndex(Perm1, FieldToPerm, weighted, groupsField)
     VarPerm1 = CorIndex.TargetVar(UnchangePerm, targetGroup)
     GroupEqualPermList = c(GroupEqualPermList, CorIndex.groupEqual(VarPerm1))
@@ -550,6 +631,8 @@ CorIndex.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targ
 #' @param SquareID string - optional if non-weighted, but MUST be used if a weighting
 #'     is used. ID of each location. Useful later for permutating the locations to
 #'     calculate p-values.
+#' @param toroidal Boolean - If you suspect that your data is spatially auto-correlated you should use 
+#'     a toroidal permutation.
 #' @return a custom class "CorIndexVar" containing all values which are the
 #'     same for all habitats and don't need to be recalculated for every
 #'     habitat. Including Nk, nk, the habitats "GroupDF", N, K, Ngp, nkoverNk
@@ -572,7 +655,7 @@ CorIndex.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targ
 #' @references
 #'     Future publication...
 #' @export
-CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL){
+CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL, toroidal = NULL){
   CorIndexVarInput = CorIndex(InDataframe, speciesbinary, weighted, group, SquareID)
   OutDF = CorIndexVarInput$GroupDF
   OutDF$R = 0.0000000000
@@ -582,7 +665,7 @@ CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numb
   for(i in 1:nrow(OutDF)) {
     targetVariables = CorIndex.TargetVar(CorIndexVarInput,OutDF[i,1])
     print(OutDF[i,1])
-    Distributions = CorIndex.xPerm(InDataframe, speciesbinary,weighted,group,i, numberIteration, SquareID)
+    Distributions = CorIndex.xPerm(InDataframe, speciesbinary,weighted,group,i, numberIteration, SquareID, toroidal)
     OutDF[i,2]= CorIndex.nonEqual(targetVariables)
     #Calc each of the probabilities.
     length(Distributions$NonGroupEqualPermList[Distributions$NonGroupEqualPermList >= OutDF[i,2]])/numberIteration
@@ -598,7 +681,47 @@ CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numb
 
 
 
-
+#' Calculated the non group-equalised habitat indicator value (IndVal).
+#'
+#' This function calculates the non group-equalised version of the habitat indicator value (IndVal)
+#' \cite{De Cáceres and Legendre (2009)}. This is
+#' useful alone to calculate the non group-equalised version for a single habitat of interest
+#' among multiple other habitats.
+#'
+#' @param CorIndexTargetVarInput a custom class "CorIndexVar" containing all values from
+#'     from both \link[PhiCor]{CorIndex} and \link[PhiCor]{CorIndex.TargetVar}
+#' @return IndVal - a floating point number between 0 and 1.
+#' @examples
+#'     #Builing on the examples from \link[PhiCor]{CorIndex.TargetVar}
+#'     #Using the included dataframe Species1
+#'     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')
+#'     Inputs_species1$nkoverNk
+#'     #Using CorIndex.TargetVar, the input is the output of Indicator. In this case we are interested in
+#'     #habitat 1 (using the ID for the habitat)
+#'     Inputs_species1_hab1 = Indicator.TargetVar(Inputs_species1, 1)
+#'
+#'     species1_hab1_Phi = Indicator.nonEqual(Inputs_species1_hab1)
+#'
+#'
+#'
+#'     #Using the included dataframe Species2
+#'     #If you wanted the analysis to be non-weighted.
+#'     Species2Unweight = Species2[which(Species2$Proportion==1),]
+#'     #This analysis is then the unweighted version of the analysis. SquareID is not needed.
+#'     Inputs_species2 =  CorIndex(InDataframe = Species2Unweight, speciesbinary = 'Species2', weighted = 'Proportion', group = 'HabId')
+#'     names(Inputs_species2)
+#'
+#'     #Looking at habitat 4
+#'     Inputs_species2_hab4 = Indicator.TargetVar(Inputs_species2, 4)
+#'
+#'     species2_hab4_IndVal = Indicator.nonEqual(Inputs_species2_hab4)
+#' @seealso \link[PhiCor]{PhiCor}
+#' @author Jordan Chetcuti
+#' @references
+#'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
+#' @references
+#'     Future publication...
+#' @export
 Indicator.nonEqual <- function(CorIndexTargetVarInput){
   N = CorIndexTargetVarInput$N
   np = CorIndexTargetVarInput$np
@@ -609,7 +732,49 @@ Indicator.nonEqual <- function(CorIndexTargetVarInput){
   return(Rnon)
 }
 
-
+#' Calculated the group-equalised species indicator value (IndVal).
+#'
+#' This function calculates the group-equalised version of the species indicator value (IndVal)
+#' \cite{De Cáceres and Legendre (2009)}. This is
+#' useful alone to calculate the group-equalised version for a single habitat of interest
+#' among multiple other habitats.
+#'
+#' @param CorIndexTargetVarInput a custom class "CorIndexVar" containing all values from
+#'     from both \link[PhiCor]{CorIndex} and \link[PhiCor]{CorIndex.TargetVar}
+#' @return IndVal - a floating point number between 0 and 1.
+#' @examples
+#'     #Builing on the examples from \link[PhiCor]{CorIndex.TargetVar}
+#'     #Using the included dataframe Species1
+#'     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')
+#'     Inputs_species1$nkoverNk
+#'     #Using CorIndex.TargetVar, the input is the output of Indicator. In this case we are interested in
+#'     #habitat 1 (using the ID for the habitat)
+#'     Inputs_species1_hab1 = CorIndex.TargetVar(Inputs_species1, 1)
+#'
+#'     species1_hab1_GE_IndVal = Indicator.groupEqual(Inputs_species1_hab1)
+#'
+#'
+#'
+#'     #Using the included dataframe Species2
+#'     #If you wanted the analysis to be non-weighted.
+#'     Species2Unweight = Species2[which(Species2$Proportion==1),]
+#'     #This analysis is then the unweighted version of the analysis. SquareID is not needed.
+#'     Inputs_species2 =  CorIndex(InDataframe = Species2Unweight, speciesbinary = 'Species2', weighted = 'Proportion', group = 'HabId')
+#'     names(Inputs_species2)
+#'
+#'     #Looking at habitat 4
+#'     Inputs_species2_hab4 = Indicator.TargetVar(Inputs_species2, 4)
+#'
+#'     species2_hab4_GE_IndVal = Indicator.groupEqual(Inputs_species2_hab4)
+#'
+#'
+#' @seealso \link[PhiCor]{PhiCor}
+#' @author Jordan Chetcuti
+#' @references
+#'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
+#' @references
+#'     Future publication...
+#' @export
 Indicator.groupEqual <- function(CorIndexTargetVarInput){
   N = CorIndexTargetVarInput$N
   ngp = CorIndexTargetVarInput$ngp
@@ -628,12 +793,63 @@ Indicator.groupEqual <- function(CorIndexTargetVarInput){
 
 
 
-
-Indicator.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targetGroup, x = 1000, SquareID = NULL){
+#' Permutates and calculates for each permutation both the non and group-equalised
+#' species indicator value (IndVal).
+#'
+#' This function purmutaes and calculates the non and group-equalised versions of species indicator 
+#' value (IndVal) \cite{De Cáceres and Legendre (2009)}.
+#' It is useful as it gives the distribution of IndVal values if the species are distributed
+#' randomly across the locations, the IndVal value for the actual data is compared to this
+#' distribution to calculate the p-value. The distribution is a useful output to visualise
+#' the distribution.
+#'
+#' @param InDataframe dataframe - containing the data on species presence absence,
+#'     habitat and weighting. It also optionally could contain location ID's.
+#' @param FieldToPerm string - the name of the binary field within InDataframe
+#'     that contains binary presence absence for a species at the location.
+#' @param weighted string - name of habitat weighting field. For example, proportion
+#'     of habitat, but any weighting with all habitats at a location adding to 1.
+#' @param groupsField string - ID of habitats or groups of interest.
+#' @param targetgroup Integer - ID of the habitat of interest.
+#' @param x Integer - optional - the number of permutation, set as 1000 by default.
+#' @param SquareID string - optional if non-weighted, but MUST be used if a weighting
+#'     is used. ID of each location. Useful later for permutating the locations to
+#'     calculate p-values.
+#' @param toroidal Boolean - If you suspect that your data is spatially auto-correlated you should use 
+#'     a toroidal permutation.
+#' @return Two data frames, one for the group-equalised $`GroupEqualPermList` and one
+#'     for the non group-equalised $NonGroupEqualPermList. It also returns the number of
+#'     permutations $Permutations.
+#' @examples
+#'     #Building on the examples from \link[PhiCor]{Indicator.nonEqual}
+#'     #Using the included dataframe Species1
+#'     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')
+#'     Inputs_species1$nkoverNk
+#'     #Using CorIndex.TargetVar, the input is the output of Indicator. In this case we are interested in
+#'     #habitat 1 (using the ID for the habitat)
+#'     Inputs_species1_hab1 = CorIndex.TargetVar(Inputs_species1, 1)
+#'
+#'     species1_hab1_Indval = Indicator.nonEqual(Inputs_species1_hab1)
+#'
+#'     #histogram showing the output of Indicator.xPerm for habitat 1 in comparison to the IndVal value from actual data.
+#'     hist(Hab1_PermutatedPhi$NonGroupEqualPermList, main = "Non group-equalised distribution", xlab = "IndVal values", breaks = 100)
+#'     abline(v=species1_hab1_IndVal, col="red")
+#'     text((species1_hab1_IndVal + 0.006), 15, "Calulated IndVal value", col = "red", srt=90)
+#'
+#'
+#'
+#' @seealso \link[PhiCor]{PhiCor}
+#' @author Jordan Chetcuti
+#' @export
+Indicator.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targetGroup, x = 1000, SquareID = NULL, toroidal = FALSE){
   GroupEqualPermList = c()
   NonGroupEqualPermList = c()
   for(i in 1:x){
-    Perm1 = CorIndex.APerm(InDataframe, FieldToPerm, SquareID)
+    if (toroidal){
+      Perm1 = CorIndex.toroidalAPerm(InDataframe, FieldToPerm, SquareID)
+    }else{
+      Perm1 = CorIndex.APerm(InDataframe, FieldToPerm, SquareID)
+    }
     
     
     UnchangePerm = CorIndex(Perm1, FieldToPerm, weighted, groupsField)
@@ -648,8 +864,48 @@ Indicator.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, tar
 }
 
 
-
-Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL){
+#' Calculated both the non and group-equalised IndVal for all habitats
+#' and the p-values.
+#'
+#' This function calculates the non and group-equalised versions of an habitat indicator value (IndVal)
+#' correlation \cite{De Cáceres and Legendre (2009)}.
+#'
+#' It calculate p-values by permutation and therefore calculates take a bit of time.
+#'
+#' @param InDataframe dataframe - containing the data on species presence absence,
+#'     habitat and weighting. It also optionally could contain location ID's.
+#' @param speciesbinary string - the name of the binary field within InDataframe
+#'     that contains binary presence absence for a species at the location.
+#' @param weighted string - name of habitat weighting field. For example, proportion
+#'     of habitat, but any weighting with all habitats at a location adding to 1.
+#' @param group string - ID of habitats or groups of interest.
+#' @param numberIteration Integer - optional - the number of permutation, set as 1000 by default.
+#' @param SquareID string - optional if non-weighted, but MUST be used if a weighting
+#'     is used. ID of each location. Useful later for permutating the locations to
+#'     calculate p-values.
+#' @param toroidal Boolean - If you suspect that your data is spatially auto-correlated you should use 
+#'     a toroidal permutation.
+#' @return a custom class "CorIndexVar" containing all values which are the
+#'     same for all habitats and don't need to be recalculated for every
+#'     habitat. Including Nk, nk, the habitats "GroupDF", N, K, Ngp, nkoverNk
+#'     ng & n. See \cite{De Cáceres and Legendre (2009)}. To this is added another custom
+#'     class "Output" as $`result` which gives the habitat ID, I (non group-equalised IndVal)
+#'     pI (the p-value for I), Ig (group-equalised IndVal) and Ig (the p-value for Ig). This
+#'     "Output" class is the main result, the CorIndexVar is included as metadata of the
+#'     input values.
+#' @examples
+#'     #Using the included dataframe Species1
+#'     Species1_AllIndValvalues = Indicator.all.plusP(InDataframe = Species1, speciesbinary = "Species1", weighted = 'Proportion', group = 'HabId', SquareID = 'LocationID')
+#'     names(Species1_AllIndValvalues)
+#'     Species1_AllIndValvalues$`result`
+#' @seealso \link[PhiCor]{PhiCor}
+#' @author Jordan Chetcuti
+#' @references
+#'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
+#' @references
+#'     Future publication...
+#' @export
+Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL, toroidal = NULL){
   CorIndexVarInput = CorIndex(InDataframe, speciesbinary, weighted, group, SquareID)
   OutDF = CorIndexVarInput$GroupDF
   OutDF$I = 0.0000000000
@@ -664,7 +920,7 @@ Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, num
     
     print(OutDF[i,1])
     
-    Distributions = Indicator.xPerm(InDataframe, speciesbinary,weighted,group,i, numberIteration, SquareID)
+    Distributions = Indicator.xPerm(InDataframe, speciesbinary,weighted,group,i, numberIteration, SquareID, toroidal)
     
     
     OutDF[i,2]= Indicator.nonEqual(targetVariables)

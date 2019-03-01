@@ -32,7 +32,18 @@ site fidelity of habitat sites.
         \item \link[PhiCor]{CorIndex.all} returns the non and group-equalised phi values for all habitats
             without p-values and is therefore quicker.
     }
-
+    Weighted habitat indicator values (IndVal) can also be calculated, but these have not been tested in
+    the way that the phi coefficent has been. 
+    The main function for calculating IndVal is \link[PhiCor]{Indicator.all.plusP}
+    These functions are useful in testing or calculating only part
+    of the full outputs from \link[PhiCor]{Indicator.all.plusP}:
+    \itemize{
+        \item \link[PhiCor]{Indicator.nonEqual} Calculated the non group-equalised habitat indicator value (IndVal).
+        \item \link[PhiCor]{Indicator.groupEqual} Calculated the group-equalised species indicator value (IndVal).
+        \item \link[PhiCor]{Indicator.xPerm} Permutates and calculates for each permutation both the non and 
+             group-equalised species indicator value (IndVal).
+        \item 
+    } 
 
     The functions \link[PhiCor]{lookup} and \link[PhiCor]{FilePathInTree}
     might be used elsewhere.
