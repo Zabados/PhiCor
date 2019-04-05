@@ -16,6 +16,8 @@ Chetcuti, J. et al. 2019. A weighting method to improve habitat association anal
 ----------------
 Chetcuti, J.; Kunin, W.E.; Bullock, J.M. (2019). Ground beetle (Carabidae) associations with UK Land Cover Map habitats. NERC Environmental Information Data Centre. https://doi.org/10.5285/ce0a6690-9277-4880-a20a-b30477bf8646
 
+Example results: https://shiny-apps.ceh.ac.uk/CarabidData/
+
 ### Installation
 ----------------
 
