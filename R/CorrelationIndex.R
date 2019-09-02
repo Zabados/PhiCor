@@ -44,7 +44,7 @@
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @keywords internal
 #'
 "_PACKAGE"
@@ -200,7 +200,7 @@ lookup = function(MasterDataField, AdditionField, AdditionInputField){
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 CorIndex <- function(InDataframe, speciesbinary,weighted, group, SquareID = NULL){
   speciesbinary = InDataframe[,speciesbinary]
@@ -290,7 +290,7 @@ CorIndex.default <- function(InDataframe, speciesbinary,weighted, group, SquareI
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 CorIndex.TargetVar <- function(CorIndexVarInput, targetgroup){
   rtrn <- list()
@@ -351,7 +351,7 @@ CorIndex.TargetVar <- function(CorIndexVarInput, targetgroup){
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 CorIndex.groupEqual <- function(CorIndexTargetVarInput){
   N = CorIndexTargetVarInput$N
@@ -402,7 +402,7 @@ CorIndex.groupEqual <- function(CorIndexTargetVarInput){
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 CorIndex.nonEqual <- function(CorIndexTargetVarInput){
   N = CorIndexTargetVarInput$N
@@ -453,7 +453,7 @@ CorIndex.nonEqual <- function(CorIndexTargetVarInput){
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 CorIndex.all <- function(CorIndexVarInput){
   OutDF = CorIndexVarInput$GroupDF
@@ -653,7 +653,7 @@ CorIndex.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, targ
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL, toroidal = NULL){
   CorIndexVarInput = CorIndex(InDataframe, speciesbinary, weighted, group, SquareID)
@@ -720,7 +720,7 @@ CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numb
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 Indicator.nonEqual <- function(CorIndexTargetVarInput){
   N = CorIndexTargetVarInput$N
@@ -773,7 +773,7 @@ Indicator.nonEqual <- function(CorIndexTargetVarInput){
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 Indicator.groupEqual <- function(CorIndexTargetVarInput){
   N = CorIndexTargetVarInput$N
@@ -903,7 +903,7 @@ Indicator.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, tar
 #' @references
 #'     De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 #' @references
-#'     Future publication...
+#'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
 Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL, toroidal = NULL){
   CorIndexVarInput = CorIndex(InDataframe, speciesbinary, weighted, group, SquareID)

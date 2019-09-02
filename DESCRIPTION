@@ -6,10 +6,10 @@ Authors@R: person("Chetcuti", "Jordan", email = "jorche@ceh.ac.uk", role = c("au
 Description: A package for calculating the Phi coefficient of Association to determine habitat preference of species. 
 Date: 2018-08-31
 URL: https://doi.org/10.5281/zenodo.1407053
-References:Chetcuti, J. et al. 2019. A weighting method to improve habitat association analysis: tested on British carabids. - Ecography (Cop.).: ecog.04295.
+References: Chetcuti, J. et al. 2019. A weighting method to improve habitat association analysis: tested on British carabids. - Ecography (Cop.).: ecog.04295.
 License: CC BY
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: knitr,rmarkdown
 VignetteBuilder: knitr

@@ -51,7 +51,7 @@ site fidelity of habitat sites.
 \references{
 De Cáceres, M., & Legendre, P. (2009). Associations between species and groups of sites: indices and statistical inference. Ecology, 90(12), 3566–3574.
 
-Future publication...
+Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 }
 \seealso{
 Useful links:
