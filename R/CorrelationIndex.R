@@ -665,7 +665,7 @@ CorIndex.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numb
   for(i in 1:nrow(OutDF)) {
     targetVariables = CorIndex.TargetVar(CorIndexVarInput,OutDF[i,1])
     print(OutDF[i,1])
-    Distributions = CorIndex.xPerm(InDataframe, speciesbinary,weighted,group,i, numberIteration, SquareID, toroidal)
+    Distributions = CorIndex.xPerm(InDataframe, speciesbinary,weighted,group,OutDF[i,"group"], numberIteration, SquareID, toroidal)
     OutDF[i,2]= CorIndex.nonEqual(targetVariables)
     #Calc each of the probabilities.
     length(Distributions$NonGroupEqualPermList[Distributions$NonGroupEqualPermList >= OutDF[i,2]])/numberIteration
