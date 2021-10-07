@@ -905,7 +905,7 @@ Indicator.xPerm <- function(InDataframe, FieldToPerm, weighted, groupsField, tar
 #' @references
 #'     Chetcuti, J., Kunin, W. E. & Bullock, J. M. A weighting method to improve habitat association analysis: tested on British carabids. Ecography (Cop.). 42, 1395–1404 (2019).
 #' @export
-Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL, toroidal = NULL){
+Indicator.all.plusP <- function(InDataframe, speciesbinary, weighted, group, numberIteration = 1000, SquareID = NULL, toroidal = FALSE){
   CorIndexVarInput = CorIndex(InDataframe, speciesbinary, weighted, group, SquareID)
   OutDF = CorIndexVarInput$GroupDF
   OutDF$I = 0.0000000000
