@@ -5,8 +5,15 @@
 \title{Calculated both the non and group-equalised IndVal for all habitats
 and the p-values.}
 \usage{
-Indicator.all.plusP(InDataframe, speciesbinary, weighted, group,
-  numberIteration = 1000, SquareID = NULL, toroidal = NULL)
+Indicator.all.plusP(
+  InDataframe,
+  speciesbinary,
+  weighted,
+  group,
+  numberIteration = 1000,
+  SquareID = NULL,
+  toroidal = FALSE
+)
 }
 \arguments{
 \item{InDataframe}{dataframe - containing the data on species presence absence,

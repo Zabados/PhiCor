@@ -20,7 +20,7 @@ useful alone to calculate the group-equalised version for a single habitat of in
 among multiple other habitats.
 }
 \examples{
-    #Builing on the examples from \\link[PhiCor]{CorIndex.TargetVar}
+    #Builing on the examples from \link[PhiCor]{CorIndex.TargetVar}
     #Using the included dataframe Species1
     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')
     Inputs_species1$nkoverNk

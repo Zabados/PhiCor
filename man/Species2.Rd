@@ -4,7 +4,9 @@
 \name{Species2}
 \alias{Species2}
 \title{Species 2 data of presence absence and weighting for LCM2015 land cover}
-\format{A data frame with  1,005 rows and 5 variables:}
+\format{
+A data frame with  1,005 rows and 5 variables:
+}
 \usage{
 The data is useful in examples of how to use the functions.
 \describe{

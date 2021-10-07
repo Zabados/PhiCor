@@ -27,7 +27,7 @@ to calculate the phi coefficent. This is useful if manually checking
 the calculation.
 }
 \examples{
-    #Builing on the examples from \\link[PhiCor]{CorIndex}
+    #Builing on the examples from \link[PhiCor]{CorIndex}
     #Using the included dataframe Species1
     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')
     Inputs_species1$nkoverNk

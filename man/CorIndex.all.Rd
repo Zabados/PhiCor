@@ -25,7 +25,7 @@ It doesn't calculate any p-values by permutation and therefore calculates very q
 when the p-values aren't important.
 }
 \examples{
-    #Builing on the examples from \\link[PhiCor]{CorIndex}
+    #Builing on the examples from \link[PhiCor]{CorIndex}
 
     #Using the included dataframe Species1
     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')

@@ -5,8 +5,16 @@
 \title{Permutates and calculates for each permutation both the non and group-equalised
 Phi coefficent.}
 \usage{
-CorIndex.xPerm(InDataframe, FieldToPerm, weighted, groupsField,
-  targetGroup, x = 1000, SquareID = NULL, toroidal = FALSE)
+CorIndex.xPerm(
+  InDataframe,
+  FieldToPerm,
+  weighted,
+  groupsField,
+  targetGroup,
+  x = 1000,
+  SquareID = NULL,
+  toroidal = FALSE
+)
 }
 \arguments{
 \item{InDataframe}{dataframe - containing the data on species presence absence,
@@ -45,7 +53,7 @@ distribution to calculate the p-value. The distribution is a useful output to vi
 the distribution.
 }
 \examples{
-    #Builing on the examples from \\link[PhiCor]{CorIndex.nonEqual}
+    #Builing on the examples from \link[PhiCor]{CorIndex.nonEqual}
     #Using the included dataframe Species1
     Inputs_species1 = CorIndex(InDataframe = Species1, speciesbinary = 'Species1', weighted = 'Proportion', group = 'HabId', 'LocationID')
     Inputs_species1$nkoverNk
