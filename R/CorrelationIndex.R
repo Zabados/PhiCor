@@ -206,12 +206,9 @@ CorIndex <- function(InDataframe, speciesbinary,weighted, group, SquareID = NULL
   speciesbinary = InDataframe[,speciesbinary]
   weighted = InDataframe[,weighted]
   group = InDataframe[,group]
-  tryCatch(
-    {
-      NextMethod("CorIndex")
-    },
-    error = CorIndex.default(InDataframe, speciesbinary,weighted, group, SquareID)
-  )
+  #NextMethod("CorIndex")
+  CorIndex.default(InDataframe, speciesbinary,weighted, group, SquareID)
+  
 }
 
 #' The default method of \link[PhiCor]{CorIndex}.
